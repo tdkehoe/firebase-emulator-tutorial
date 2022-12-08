@@ -27,15 +27,41 @@ cd EmulatorTutorial
 
 Follow the [Getting Started](https://firebase.google.com/docs/emulator-suite/connect_and_prototype) instructions.
 
-
-
-
-
-
-
-Initialize the emulator(s).
+Install the Firebase CLI tools.
 
 ```
-firebase init emulator
+npm install firebase-tools
 ```
+
+Initialize Firebase, including the emulators.
+
+```
+firebase init
+```
+
+## Write your functions
+
+Open `functions/index.js`.  We'll make a function that converts a message to UPPERCASE.
+
+```js
+import * as functions from "firebase-functions";
+
+export const MakeUppercase = functions.firestore.document('Messages/{docId}').onCreate((snap, context) => {
+  try {
+    const original = snap.data().original;
+    // console.log(context.params.docId);
+    functions.logger.log('Uppercasing', context.params.docId, original);
+    const uppercase = original.toUpperCase();
+    return snap.ref.set({ uppercase }, { merge: true }); // writes to the same document
+    // return admin.firestore().collection('AnotherCollection').doc(context.params.docId).set({ uppercase }, { merge: true }); // writes to a different collection
+  } catch (error) {
+    console.error(error); // emulator always throws an "unhandled error": "Your function timed out after ~60s."
+  }
+});
+```
+
+This is a little different from the example code in the documentation. They set up `index.js` as a CommonJS module, I set up an ES module. I added a line to log the `docId`. I also added a line to write to a different collection. You can leave these lines commented out.
+
+
+
 
