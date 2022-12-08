@@ -16,7 +16,7 @@ The Firebase Local Emulator Suite consists of seven emulators: Auth, Realtime Da
 
 The official documentation mentions several [other tools for prototypes and testing](https://firebase.google.com/docs/emulator-suite#other_tools_for_prototyping_and_testing). I haven't tried these, they might work better for some stuff.
 
-## Initialize the Emulator
+## Install and initialize Firebase
 
 Make a new directory.
 
@@ -38,6 +38,23 @@ Initialize Firebase, including the emulators.
 ```
 firebase init
 ```
+
+## Start Emulator
+
+Gentlemen, start your emulator!
+
+```
+firebase emulators:start
+```
+
+In a minute you should see
+
+```
+ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/   
+```
+
+Open your browser to `http://127.0.0.1:4000/ `. You should see the Firebase Emulator Suite. 
 
 ## Write your functions
 
@@ -61,6 +78,10 @@ export const MakeUppercase = functions.firestore.document('Messages/{docId}').on
 ```
 
 This is a little different from the example code in the documentation. They set up `index.js` as a CommonJS module, I set up an ES module. I added a line to log the `docId`. I also added a line to write to a different collection. You can leave these lines commented out.
+
+## Trigger your cloud function
+
+In the emulator, click on `Firestore.` Click `+ Start collection`. For the `Collectionn ID` enter `Messages`. The `Document ID` will be randomly generated. In "Field`, enter `original`. `Type` should be `string`. In `Value` enter any text you want. Click `Save`. You should see your message in the database, and in a few seconds you should see the same message in UPPERCASE.
 
 
 
