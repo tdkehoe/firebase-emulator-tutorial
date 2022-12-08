@@ -12,7 +12,7 @@ Another reason to use the emulator is that infinite loops won't cost you anythin
 
 ## Which Emulator(s) To Use?
 
-The Firebase Local Emulator Suite consists of seven emulators: Auth, Realtime Database, Firestore, Storage, and, in beta, Functions, Pub/Sub, and Extentions. This tutorial will just use Functions and Firestore.
+The Firebase Local Emulator Suite consists of seven emulators: Auth, Realtime Database, Firestore, Storage, and, in beta, Functions, Pub/Sub, and Extentions. This tutorial will use Functions, Firestore, and Storage.
 
 The official documentation mentions several [other tools for prototypes and testing](https://firebase.google.com/docs/emulator-suite#other_tools_for_prototyping_and_testing). I haven't tried these, they might work better for some stuff.
 
@@ -39,6 +39,33 @@ Initialize Firebase, including the emulators.
 firebase init
 ```
 
+## Choose a Firebase project
+
+```
+firebase use
+```
+
+## Connect your functions to Firebase
+
+Find your credentials in the Firebase console.
+
+```
+const firebaseConfig = {
+  apiKey: "...",
+  authDomain: "my-app.firebaseapp.com",
+  // credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://my-app.firebaseio.com",
+  projectId: "my-app",
+  storageBucket: "my-app.appspot.com",
+  messagingSenderId: "...",
+  appId: "..."
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+connectFirestoreEmulator(db, 'localhost', 8080);
+
 ## Start Emulator
 
 Gentlemen, start your emulator!
@@ -62,6 +89,7 @@ Open `functions/index.js`.  We'll make a function that converts a message to UPP
 
 ```js
 import * as functions from "firebase-functions";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 
 export const MakeUppercase = functions.firestore.document('Messages/{docId}').onCreate((snap, context) => {
   try {
@@ -83,6 +111,34 @@ This is a little different from the example code in the documentation. They set 
 
 In the emulator, click on `Firestore.` Click `+ Start collection`. For the `Collectionn ID` enter `Messages`. The `Document ID` will be randomly generated. In "Field`, enter `original`. `Type` should be `string`. In `Value` enter any text you want. Click `Save`. You should see your message in the database, and in a few seconds you should see the same message in UPPERCASE.
 
+## Logs
 
+Click `Logs`. You should see
+
+```
+11:09:10 I
+function[us-central1-MakeUppercase]
+Beginning execution of "MakeUppercase"
+11:09:10 I
+function[us-central1-MakeUppercase]
+{
+  "severity": "INFO",
+  "message": "Uppercasing Lup1yAK4SRKLZLy4lBnQ uppercase me"
+}
+11:09:10 I
+function[us-central1-MakeUppercase]
+Finished "MakeUppercase" in 279.713053ms
+11:09:15 W
+function[us-central1-MakeUppercase]
+Your function timed out after ~60s. To configure this timeout, see
+      https://firebase.google.com/docs/functions/manage-functions#set_timeout_and_memory_allocation.
+11:09:15 W
+function[us-central1-MakeUppercase]
+Your function was killed because it raised an unhandled error.
+```
+
+`I` means `INFO`, i.e., everything is good. `W` means `WARNING`. I have no idea why every function ends with a timed out error. I presume this is a bug in the emulators.
+
+## Storage
 
 
