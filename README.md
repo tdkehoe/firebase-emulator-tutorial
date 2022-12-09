@@ -41,9 +41,33 @@ firebase init
 
 ## Choose a Firebase project
 
+Select one of your existing Firebase projects or create a new project.
+
+View which project your local app is connected to:
+
 ```
 firebase use
 ```
+
+If you need to change this, this command has three options. To hook up your project `my-project-123`:
+
+```
+firebase use my-project-123
+```
+
+To clear the active project:
+
+```
+firebase use clear
+```
+
+To remove a project from your app:
+
+```
+firebase use --unalias my-project-123
+```
+
+More [documentation](https://firebase.google.com/docs/cli#use_aliases) on `firebase use`.
 
 ## Connect your functions to Firebase
 
