@@ -47,7 +47,7 @@ firebase use
 
 ## Connect your functions to Firebase
 
-Find your credentials in the Firebase console.
+Find your credentials in the Firebase console. Put these in `functions/index.js`.
 
 ```
 const firebaseConfig = {
@@ -65,10 +65,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 connectFirestoreEmulator(db, 'localhost', 8080);
+```
 
 ## Start Emulator
 
-Gentlemen, start your emulator!
+Gentlemen, start your emulators!
 
 ```
 firebase emulators:start
@@ -89,27 +90,23 @@ Open `functions/index.js`.  We'll make a function that converts a message to UPP
 
 ```js
 import * as functions from "firebase-functions";
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 
 export const MakeUppercase = functions.firestore.document('Messages/{docId}').onCreate((snap, context) => {
   try {
     const original = snap.data().original;
-    // console.log(context.params.docId);
-    functions.logger.log('Uppercasing', context.params.docId, original);
     const uppercase = original.toUpperCase();
-    return snap.ref.set({ uppercase }, { merge: true }); // writes to the same document
-    // return admin.firestore().collection('AnotherCollection').doc(context.params.docId).set({ uppercase }, { merge: true }); // writes to a different collection
+    return snap.ref.set({ uppercase }, { merge: true });
   } catch (error) {
-    console.error(error); // emulator always throws an "unhandled error": "Your function timed out after ~60s."
+    console.error(error);
   }
 });
 ```
 
-This is a little different from the example code in the documentation. They set up `index.js` as a CommonJS module, I set up an ES module. I added a line to log the `docId`. I also added a line to write to a different collection. You can leave these lines commented out.
+This function is a little different from the example code in the documentation. They set up a CommonJS module (`require`), I set up an ES module (`import`).
 
 ## Trigger your cloud function
 
-In the emulator, click on `Firestore.` Click `+ Start collection`. For the `Collectionn ID` enter `Messages`. The `Document ID` will be randomly generated. In "Field`, enter `original`. `Type` should be `string`. In `Value` enter any text you want. Click `Save`. You should see your message in the database, and in a few seconds you should see the same message in UPPERCASE.
+In the emulator, click on `Firestore.` Click `+ Start collection`. For the `Collection ID` enter `Messages`. The `Document ID` will be randomly generated. In "Field`, enter `original`. `Type` should be `string`. In `Value` enter any text you want. Click `Save`. You should see your message in the database, and in a few seconds you should see the same message in UPPERCASE.
 
 ## Logs
 
@@ -139,6 +136,46 @@ Your function was killed because it raised an unhandled error.
 
 `I` means `INFO`, i.e., everything is good. `W` means `WARNING`. I have no idea why every function ends with a timed out error. I presume this is a bug in the emulators.
 
+### Logs
+
+Let's add logs, two ways:
+
+```js
+console.log(context.params.docId);
+functions.logger.log('Uppercasing', context.params.docId, original);
+```
+
+### Write to another collection
+
+I can't figure out how to write to another Firestore collection in the emulator.
+
+## Write to Cloud Firestore
+
+Comment out the line `return snap.ref.set({ uppercase }, { merge: true });` and comment in the following line.
+
+```js
+  return admin.firestore().collection('AnotherCollection').doc(context.params.docId).set({ uppercase }, { merge: true }); // writes to a different collection
+```
+
 ## Storage
 
+Add these lines to your `index.js`:
 
+```js
+import { getStorage, connectStorageEmulator } from "firebase/storage";
+
+const storage = getStorage();
+connectStorageEmulator(storage, "localhost", 9199);
+```
+
+I can't figure out how to write to the Storage emulator.
+
+```
+return storage.collection('AnotherCollection').doc(context.params.docId).set({ uppercase }, { merge: true }); // writes to a different collection
+```
+
+That code throws this error:
+
+```
+TypeError: storage.collection is not a function
+```
