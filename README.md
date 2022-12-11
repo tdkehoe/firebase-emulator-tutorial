@@ -41,9 +41,19 @@ firebase init
 
 ## Choose a Firebase project
 
-Select one of your existing Firebase projects or create a new project.
+Select one of your existing Firebase projects, create a new project, or make a demo project.
 
-View which project your local app is connected to:
+### Use a demo project
+
+This documentation describes [Firebase demo projects](https://firebase.google.com/docs/emulator-suite/connect_firestore#choose_a_firebase_project). A demo project is preferred for codelabs or tutorials. A demo project ID must start with `demo-`, for example, `demo-test` or `demo-tutorial`. To make a demo project, start the emulator with the `--project` flag:
+
+```
+firebase emulators:start --project demo-test
+```
+
+### Use a real project
+
+You may prefer to use a real project. View which project your local app is connected to:
 
 ```
 firebase use
@@ -69,7 +79,7 @@ firebase use --unalias my-project-123
 
 More [documentation](https://firebase.google.com/docs/cli#use_aliases) on `firebase use`.
 
-## Connect your functions to Firebase
+### Connect your functions to Firebase
 
 Find your credentials in the Firebase console. Put these in `functions/index.js`.
 
@@ -91,7 +101,7 @@ const db = getFirestore(app);
 connectFirestoreEmulator(db, 'localhost', 8080);
 ```
 
-## Start Emulator
+### Start Emulator
 
 Gentlemen, start your emulators!
 
