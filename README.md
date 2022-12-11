@@ -51,6 +51,8 @@ This documentation describes [Firebase demo projects](https://firebase.google.co
 firebase emulators:start --project demo-test
 ```
 
+You can skip the next few sections.
+
 ### Use a real project
 
 You may prefer to use a real project. View which project your local app is connected to:
