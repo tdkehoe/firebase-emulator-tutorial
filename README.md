@@ -185,13 +185,24 @@ functions.logger.log('Uppercasing', context.params.docId, original);
 
 I can't figure out how to write to another Firestore collection in the emulator.
 
-## Write to Cloud Firestore
-
-Comment out the line `return snap.ref.set({ uppercase }, { merge: true });` and comment in the following line.
+Change this line
 
 ```js
-  return admin.firestore().collection('AnotherCollection').doc(context.params.docId).set({ uppercase }, { merge: true }); // writes to a different collection
+return snap.ref.set({ uppercase }, { merge: true }); // writes to the same document
 ```
+
+to
+
+```js
+return setDoc(
+    doc(db, 'AnotherCollection', context.params.docId),
+    { uppercase }, { merge: true }
+);
+```
+
+### Write to Cloud Firestore
+
+In `environment.ts` change `production` to `true` to write to a Cloud Firestore project. That won't work if you're using a `demo-` project ID.
 
 ## Storage
 
@@ -207,7 +218,9 @@ connectStorageEmulator(storage, "localhost", 9199);
 I can't figure out how to write to the Storage emulator.
 
 ```
-return storage.collection('AnotherCollection').doc(context.params.docId).set({ uppercase }, { merge: true }); // writes to a different collection
+return uploadString(storageRef, uppercase).then((snapshot) => {
+    console.log('Uploaded a raw string!');
+});
 ```
 
 That code throws this error:
