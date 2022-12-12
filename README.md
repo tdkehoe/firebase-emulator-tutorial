@@ -229,6 +229,119 @@ That code throws this error:
 TypeError: storage.collection is not a function
 ```
 
+## Trigger your function from Angular
+
+I can't get a function in the emulator to trigger from Angular.
+
+Import AngularFire modules:
+
+*app.module.ts*
+```js
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+import { environment } from '../environments/environment';
+
+// Angular
+import { FormsModule } from '@angular/forms';
+
+// AngularFire
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideFirestore, getFirestore, connectFirestoreEmulator } from '@angular/fire/firestore';
+import { provideFunctions,getFunctions, connectFunctionsEmulator } from '@angular/fire/functions';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideFirestore(() => {
+      const firestore = getFirestore();
+      if (!environment.production) {
+        connectFirestoreEmulator(firestore, 'localhost', 8080);
+      }
+      return firestore;
+    }),
+    provideFunctions(() => {
+      const functions = getFunctions();
+      if (!environment.production) {
+        connectFunctionsEmulator(functions, 'localhost', 5001);
+      }
+      return functions;
+    }),
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+In the view, make a form.
+
+*app.component.html*
+```html
+<h3>Trigger Firebase Cloud Function</h3>
+<form (ngSubmit)="triggerMe(triggerText)">
+    <input type="text" [(ngModel)]="triggerText" name="message" placeholder="message" required>
+    <button type="submit" value="Submit">Submit</button>
+</form>
+```
+
+Write the handler.
+
+*app.component.ts```
+```js
+import { Component } from '@angular/core';
+import { getFunctions, httpsCallable, httpsCallableFromURL } from "firebase/functions";
+import { initializeApp } from 'firebase/app';
+import { getFirestore, setDoc, doc } from "firebase/firestore";
+import { environment } from '../environments/environment';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  firebaseConfig = environment.firebaseConfig;
+  firebaseApp = initializeApp(this.firebaseConfig);
+  firestore = getFirestore(this.firebaseApp);
+  functions = getFunctions(this.firebaseApp);
+
+  triggerText: string = "";
+  messageText: string = "";
+
+  async triggerMe(triggerText: string) {
+    try {
+      console.log("Triggering Cloud Function: " + triggerText);
+      await setDoc(doc(this.firestore, "Messages", triggerText), {
+        original: triggerText,
+        createdAt: new Date()
+      });
+    } catch(error) { 
+      console.error("Error adding document: ", error);
+    }
+  };
+}
+```
+
+This throws a security rules error:
+
+```
+Error adding document:  FirebaseError: Missing or insufficient permissions.
+```
+
+The Firestore Emulator doesn't have security rules. My guess is that it rejects every read and write from outside the emulator or, more specifically, from outside the server running on `127.0.0.1:8080`.
+
+### Trigger your function on Cloud Firestore
+
+When you deploy your function to Cloud Firebase you can trigger it from Angular writing to your Cloud Firestore. This is straightforward and reliable. I have a tutorial that explains how to write from Angular to Firestore.
+
+
+
 # Call your function from Angular
 
 To make a callable function use `onCall`:
