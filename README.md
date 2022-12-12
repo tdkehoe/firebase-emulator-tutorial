@@ -83,7 +83,7 @@ More [documentation](https://firebase.google.com/docs/cli#use_aliases) on `fireb
 
 ### Connect your functions to Firebase
 
-Find your credentials in the Firebase console. Put these in `functions/index.js`.
+Find your credentials in the Firebase console. Put these in `environments.ts`.
 
 ```
 const firebaseConfig = {
@@ -227,4 +227,37 @@ That code throws this error:
 
 ```
 TypeError: storage.collection is not a function
+```
+
+# Call your function from Angular
+
+To make a callable function use `onCall`:
+
+*index.js*
+```js
+export const addMessage = functions.https.onCall((data, context) => {
+  try {
+    const original = data.text;
+    const uppercase = original.toUpperCase();
+    functions.logger.log('addMessage', original, uppercase);
+    return uppercase;
+  } catch (error) {
+    console.error(error);
+  }
+});
+```
+
+The handler functions use `httpsCallableFrom URL`:
+
+*app.component.ts*
+```js
+  callMe(messageText: string | null) {
+    console.log("Calling Cloud Function: " + messageText);
+    // const addMessage = httpsCallable(this.functions, 'addMessage'); // throws CORS error
+    const addMessage = httpsCallableFromURL(this.functions, 'http://localhost:5001/demo-test/us-central1/addMessage');
+    addMessage({ text: messageText })
+      .then((result) => {
+        console.log(result.data)
+      });
+  };
 ```
