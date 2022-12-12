@@ -261,3 +261,29 @@ The handler functions use `httpsCallableFrom URL`:
       });
   };
 ```
+
+Let's take a closer look at that URL. The first part is the location of the Functions emulator.
+
+```
+┌───────────┬────────────────┬─────────────────────────────────┐
+│ Emulator  │ Host:Port      │ View in Emulator UI             │
+├───────────┼────────────────┼─────────────────────────────────┤
+│ Functions │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions │
+├───────────┼────────────────┼─────────────────────────────────┤
+│ Firestore │ 127.0.0.1:8080 │ http://127.0.0.1:4000/firestore │
+├───────────┼────────────────┼─────────────────────────────────┤
+│ Storage   │ 127.0.0.1:9199 │ http://127.0.0.1:4000/storage   │
+└───────────┴────────────────┴─────────────────────────────────┘
+```
+
+Next is the Project ID. Next is the location of the Firebase server. The last part is the name of the Cloud Function.
+
+There's another keyword, `httpsCallable`:
+
+```js
+const addMessage = httpsCallable(this.functions, 'addMessage'); // throws CORS error
+```
+
+This uses only the name of the Cloud Function. I get a CORS errors message. Presumably it'll work if you're running your Cloud Functions and your app on the same server.
+
+
