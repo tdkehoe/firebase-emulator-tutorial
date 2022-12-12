@@ -286,4 +286,22 @@ const addMessage = httpsCallable(this.functions, 'addMessage'); // throws CORS e
 
 This uses only the name of the Cloud Function. I get a CORS errors message. Presumably it'll work if you're running your Cloud Functions and your app on the same server.
 
+Make a form in the view.
+
+*app.component.html*
+```html
+<h3>Call Firebase Cloud Function</h3>
+<form (ngSubmit)="callMe(messageText)">
+    <input type="text" [(ngModel)]="messageText" name="message" placeholder="message" required>
+    <button type="submit" value="Submit">Submit</button>
+</form>
+```
+
+## Comparing Triggerable and Callable Cloud Functions
+
+Callable Cloud Functions are neat. The code is short and the data is returned as a promise. You can use Callable Cloud Functions in the emulator, called from Angular. This speeds up development time.
+
+Triggerable Cloud Functions require an Observer to get the data back, making your code more complex. I haven't done a speed test but I'm sure that writing to the database to trigger the function, then writing the results to the database, then waiting for the Observer will be slower. You can't trigger a function in the emulator from Angular so you'll have to use Cloud Firestore, which slows development time to a crawl.
+
+On the other hand, writing to Firestore should be something you've done a million times and feel comfortable with. This makes Triggerable Cloud Functions solid and reliable. Callable Cloud Functions rely on relationships between servers, which seem less reliable.
 
