@@ -1,6 +1,6 @@
-# Writing Firebase Cloud Functions on the Firebase Emulator
+# Writing Firebase Cloud Functions with the Firebase Emulator and Angular.
 
-This tutorial will show you how to write Triggerable and Callable Firebase Cloud Functions using the Firebase Local Emulator Suite.
+This tutorial will show you how to write Triggerable and Callable Firebase Cloud Functions using the Firebase Local Emulator Suite. We'll learn how to call and trigger the functions from Angular.
 
 There is official documentation for the [Emulator](https://firebase.google.com/docs/emulator-suite) and for [Cloud Functions](https://firebase.google.com/docs/functions).
 
