@@ -338,9 +338,7 @@ The Firestore Emulator doesn't have security rules. My guess is that it rejects 
 
 ### Trigger your function on Cloud Firestore
 
-When you deploy your function to Cloud Firebase you can trigger it from Angular writing to your Cloud Firestore. This is straightforward and reliable. I have a tutorial that explains how to write from Angular to Firestore.
-
-
+When you deploy your function to Cloud Firebase you can trigger it from Angular writing to your Cloud Firestore. This is straightforward and reliable. I have a tutorial that explains how to write from [Angular to Firestore using AngularFire](https://github.com/tdkehoe/Using-Firebase-with-Angular-and-AngularFire).
 
 # Call your function from Angular
 
