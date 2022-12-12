@@ -1,8 +1,8 @@
 # Writing Firebase Cloud Functions on the Firebase Emulator
 
-This tutorial will show you how to write one simple Firebase Cloud Function that reads and writes to Firestore using the Firebase Local Emulator Suite.
+This tutorial will show you how to write Triggerable and Callable Firebase Cloud Functions using the Firebase Local Emulator Suite.
 
-The [official documentation](https://firebase.google.com/docs/emulator-suite) is good. This tutorial covers items left out of the official documentation.
+There is official documentation for the [Emulator](https://firebase.google.com/docs/emulator-suite) and for [Cloud Functions](https://firebase.google.com/docs/functions).
 
 ## Why Use the Firebase Local Emulator Suite?
 
